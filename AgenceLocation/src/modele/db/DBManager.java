@@ -1,5 +1,5 @@
-package modele.db;
-import  agenceLocation.modele.DatabaseConnection;
+package AgenceLocation;
+
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -77,7 +77,7 @@ public class DBManager {
     
     public static ArrayList<ClientData> getAllClientsData() {
         ArrayList<ClientData> clientsData = new ArrayList<>();
-        String sql = "SELECT id, f_name, l_name, adress, num_tell, num_permis FROM clients";
+        String sql = "SELECT id, f_name, l_name, adress, num_tell, num_permis, trustworthy FROM clients";
         
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
@@ -104,7 +104,7 @@ public class DBManager {
                     }
                 }
                 
-                clientsData.add(new ClientData(id, fName, lName, adress, numTell, numPermis));
+                clientsData.add(new ClientData(id, fName, lName, adress, numTell, numPermis, rs.getBoolean("trustworthy")));
             }
         } catch (SQLException e) {
             System.err.println("Error fetching clients: " + e.getMessage());
@@ -116,7 +116,7 @@ public class DBManager {
     
    
     public static ClientData getClientDataById(int clientId) {
-        String sql = "SELECT id, f_name, l_name, adress, num_tell, num_permis FROM clients WHERE id = ?";
+        String sql = "SELECT id, f_name, l_name, adress, num_tell, num_permis, trustworthy FROM clients WHERE id = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -144,7 +144,7 @@ public class DBManager {
                     }
                 }
                 
-                return new ClientData(id, fName, lName, adress, numTell, numPermis);
+                return new ClientData(id, fName, lName, adress, numTell, numPermis, rs.getBoolean("trustworthy"));
             }
         } catch (SQLException e) {
             System.err.println("Error fetching client: " + e.getMessage());
@@ -156,7 +156,7 @@ public class DBManager {
     
     
     public static ClientData getClientDataByNumPermis(int numPermis) {
-        String sql = "SELECT id, f_name, l_name, adress, num_tell, num_permis FROM clients WHERE num_permis = ?";
+        String sql = "SELECT id, f_name, l_name, adress, num_tell, num_permis, trustworthy FROM clients WHERE num_permis = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -184,7 +184,7 @@ public class DBManager {
                     }
                 }
                 
-                return new ClientData(id, fName, lName, adress, numTell, numPermisDb);
+                return new ClientData(id, fName, lName, adress, numTell, numPermisDb, rs.getBoolean("trustworthy"));
             }
         } catch (SQLException e) {
             System.err.println("Error fetching client by num_permis: " + e.getMessage());
@@ -395,14 +395,16 @@ public class DBManager {
         public final String adress;
         public final int numTell;
         public final int numPermis;
+        public final boolean trustworthy;
         
-        public ClientData(int id, String fName, String lName, String adress, int numTell, int numPermis) {
+        public ClientData(int id, String fName, String lName, String adress, int numTell, int numPermis, boolean trustworthy) {
             this.id = id;
             this.fName = fName;
             this.lName = lName;
             this.adress = adress;
             this.numTell = numTell;
             this.numPermis = numPermis;
+            this.trustworthy = trustworthy;
         }
     }
     

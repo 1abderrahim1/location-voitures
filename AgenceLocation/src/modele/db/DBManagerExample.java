@@ -1,9 +1,4 @@
-package modele.db;
-
-import modele.db.DBManager;
-
-import agenceLocation.modele.DatabaseConnection;
-
+package AgenceLocation;
 
 import java.util.ArrayList;
 
@@ -36,8 +31,7 @@ public class DBManagerExample {
             ArrayList<DBManager.ClientData> clientsData = DBManager.getAllClientsData();
             System.out.println("Found " + clientsData.size() + " clients");
             for (DBManager.ClientData c : clientsData) {
-                System.out.println("  - ID: " + c.id + ", " + c.fName + " " + c.lName + 
-                    ", Permis: " + c.numPermis);
+                System.out.println("  - ID: " + c.id + ", " + c.fName + " " + c.lName + ", Permis: " + c.numPermis + ", Trustworthy: " + c.trustworthy);
             }
             
             // Example 4: Search for a specific client

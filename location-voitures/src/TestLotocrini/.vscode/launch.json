@@ -1,0 +1,30 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch Lotocrini",
+            "request": "launch",
+            "mainClass": "app.Main",
+            "vmArgs": [
+                "--module-path=C:/javafx-sdk-25/javafx-sdk-25.0.1/lib",
+                "--add-modules=javafx.controls,javafx.fxml,javafx.graphics",
+                "--enable-native-access=javafx.graphics"
+            ],
+            "console": "integratedTerminal",
+            "stopOnEntry": false,
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "java",
+            "name": "Debug Current File",
+            "request": "launch",
+            "mainClass": "${file}",
+            "vmArgs": [
+                "--module-path=C:/javafx-sdk-25/javafx-sdk-25.0.1/lib",
+                "--add-modules=javafx.controls,javafx.fxml,javafx.graphics",
+                "--enable-native-access=javafx.graphics"
+            ]
+        }
+    ]
+}

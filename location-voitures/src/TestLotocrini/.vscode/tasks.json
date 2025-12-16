@@ -1,0 +1,63 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Compile JavaFX Project",
+            "type": "shell",
+            "command": "javac",
+            "args": [
+                "--module-path",
+                "C:/javafx-sdk-25/javafx-sdk-25.0.1/lib",
+                "--add-modules",
+                "javafx.controls,javafx.fxml,javafx.graphics",
+                "-d",
+                "${workspaceFolder}/bin",
+                "-cp",
+                "${workspaceFolder}/src/main/java;C:/javafx-sdk-25/javafx-sdk-25.0.1/lib/*",
+                "${workspaceFolder}/src/main/java/app/Main.java",
+                "${workspaceFolder}/src/main/java/app/view/*.java"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run JavaFX Application",
+            "type": "shell",
+            "command": "java",
+            "args": [
+                "--module-path",
+                "C:/javafx-sdk-25/javafx-sdk-25.0.1/lib",
+                "--add-modules",
+                "javafx.controls,javafx.fxml,javafx.graphics",
+                "--enable-native-access=javafx.graphics",
+                "-cp",
+                "${workspaceFolder}/bin;C:/javafx-sdk-25/javafx-sdk-25.0.1/lib/*",
+                "app.Main"
+            ],
+            "group": "test",
+            "problemMatcher": []
+        },
+        {
+            "label": "Clean Build",
+            "type": "shell",
+            "command": "cmd",
+            "args": [
+                "/c",
+                "if exist bin rmdir /s /q bin && mkdir bin && echo Build cleaned"
+            ],
+            "group": "build"
+        },
+        {
+            "label": "Compile & Run",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Compile JavaFX Project",
+                "Run JavaFX Application"
+            ],
+            "group": "test"
+        }
+    ]
+}

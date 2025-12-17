@@ -49,7 +49,7 @@ public class DBManager {
     
    
     public static VoitureData getVoitureDataById(int voitureId) {
-        String sql = "SELECT id, marque, modele, prix, disponible FROM voitures WHERE id = ?";
+        String sql = "SELECT id, marque, modele, prix, disponible, FROM voitures WHERE id = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -74,10 +74,60 @@ public class DBManager {
         return null;
     }
     
-    
+    public static boolean insertVoiture(String marque, String modele, double prix,
+            boolean disponible, String pathToImage) {
+String sql = """
+INSERT INTO voitures (marque, modele, prix, disponible, path_to_image)
+VALUES (?, ?, ?, ?, ?)
+""";
+
+try (Connection conn = DatabaseConnection.getConnection();
+PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+pstmt.setString(1, marque);
+pstmt.setString(2, modele);
+pstmt.setDouble(3, prix);
+pstmt.setBoolean(4, disponible);
+pstmt.setString(5, pathToImage);
+
+return pstmt.executeUpdate() > 0;
+
+} catch (SQLException e) {
+System.err.println("Error inserting voiture: " + e.getMessage());
+return false;
+}
+}
+
+    public static boolean updateVoiture(int id, String marque, String modele,
+            double prix, boolean disponible, String pathToImage) {
+String sql = """
+UPDATE voitures
+SET marque = ?, modele = ?, prix = ?, disponible = ?, path_to_image = ?,
+updated_at = CURRENT_TIMESTAMP
+WHERE id = ?
+""";
+
+try (Connection conn = DatabaseConnection.getConnection();
+PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+pstmt.setString(1, marque);
+pstmt.setString(2, modele);
+pstmt.setDouble(3, prix);
+pstmt.setBoolean(4, disponible);
+pstmt.setString(5, pathToImage);
+pstmt.setInt(6, id);
+
+return pstmt.executeUpdate() > 0;
+
+} catch (SQLException e) {
+System.err.println("Error updating voiture: " + e.getMessage());
+return false;
+}
+}
+
     public static ArrayList<ClientData> getAllClientsData() {
         ArrayList<ClientData> clientsData = new ArrayList<>();
-        String sql = "SELECT id, f_name, l_name, adress, num_tell, num_permis, trustworthy FROM clients";
+        String sql = "SELECT id, f_name, l_name, adress, num_tell, num_permis FROM clients";
         
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
@@ -104,7 +154,7 @@ public class DBManager {
                     }
                 }
                 
-                clientsData.add(new ClientData(id, fName, lName, adress, numTell, numPermis, rs.getBoolean("trustworthy")));
+                clientsData.add(new ClientData(id, fName, lName, adress, numTell, numPermis));
             }
         } catch (SQLException e) {
             System.err.println("Error fetching clients: " + e.getMessage());
@@ -116,7 +166,7 @@ public class DBManager {
     
    
     public static ClientData getClientDataById(int clientId) {
-        String sql = "SELECT id, f_name, l_name, adress, num_tell, num_permis, trustworthy FROM clients WHERE id = ?";
+        String sql = "SELECT id, f_name, l_name, adress, num_tell, num_permis FROM clients WHERE id = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -144,7 +194,7 @@ public class DBManager {
                     }
                 }
                 
-                return new ClientData(id, fName, lName, adress, numTell, numPermis, rs.getBoolean("trustworthy"));
+                return new ClientData(id, fName, lName, adress, numTell, numPermis);
             }
         } catch (SQLException e) {
             System.err.println("Error fetching client: " + e.getMessage());
@@ -156,7 +206,7 @@ public class DBManager {
     
     
     public static ClientData getClientDataByNumPermis(int numPermis) {
-        String sql = "SELECT id, f_name, l_name, adress, num_tell, num_permis, trustworthy FROM clients WHERE num_permis = ?";
+        String sql = "SELECT id, f_name, l_name, adress, num_tell, num_permis FROM clients WHERE num_permis = ?";
         
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -184,7 +234,7 @@ public class DBManager {
                     }
                 }
                 
-                return new ClientData(id, fName, lName, adress, numTell, numPermisDb, rs.getBoolean("trustworthy"));
+                return new ClientData(id, fName, lName, adress, numTell, numPermisDb);
             }
         } catch (SQLException e) {
             System.err.println("Error fetching client by num_permis: " + e.getMessage());
@@ -193,6 +243,59 @@ public class DBManager {
         
         return null;
     }
+    
+    public static boolean insertClient(String fName, String lName, String adress,
+            String numTell, int numPermis, boolean loyale) {
+String sql = """
+INSERT INTO clients (f_name, l_name, adress, num_tell, num_permis, loyale)
+VALUES (?, ?, ?, ?, ?, ?)
+""";
+
+try (Connection conn = DatabaseConnection.getConnection();
+PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+pstmt.setString(1, fName);
+pstmt.setString(2, lName);
+pstmt.setString(3, adress);
+pstmt.setString(4, numTell);
+pstmt.setInt(5, numPermis);
+pstmt.setBoolean(6, loyale);
+
+return pstmt.executeUpdate() > 0;
+
+} catch (SQLException e) {
+System.err.println("Error inserting client: " + e.getMessage());
+return false;
+}
+}
+    public static boolean updateClient(int id, String fName, String lName,
+            String adress, String numTell, boolean loyale) {
+String sql = """
+UPDATE clients
+SET f_name = ?, l_name = ?, adress = ?, num_tell = ?, loyale = ?,
+updated_at = CURRENT_TIMESTAMP
+WHERE id = ?
+""";
+
+try (Connection conn = DatabaseConnection.getConnection();
+PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+pstmt.setString(1, fName);
+pstmt.setString(2, lName);
+pstmt.setString(3, adress);
+pstmt.setString(4, numTell);
+pstmt.setBoolean(5, loyale);
+pstmt.setInt(6, id);
+
+return pstmt.executeUpdate() > 0;
+
+} catch (SQLException e) {
+System.err.println("Error updating client: " + e.getMessage());
+return false;
+}
+}
+
+    
     
     
     public static ArrayList<ReservationData> getAllReservationsData() {
@@ -290,7 +393,63 @@ public class DBManager {
         
         return reservationsData;
     }
-    
+    public static boolean insertReservation(int clientId, int voitureId,
+            LocalDate dateReservation,
+            LocalDate dateAffectation,
+            LocalDate dateRetour,
+            double prix, String statut) {
+String sql = """
+INSERT INTO reservations
+(client_id, voiture_id, date_reservation, date_affectation,
+date_retour, prix, statut)
+VALUES (?, ?, ?, ?, ?, ?, ?)
+""";
+
+try (Connection conn = DatabaseConnection.getConnection();
+PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+pstmt.setInt(1, clientId);
+pstmt.setInt(2, voitureId);
+pstmt.setString(3, dateReservation.toString());
+pstmt.setString(4, dateAffectation != null ? dateAffectation.toString() : null);
+pstmt.setString(5, dateRetour.toString());
+pstmt.setDouble(6, prix);
+pstmt.setString(7, statut);
+
+return pstmt.executeUpdate() > 0;
+
+} catch (SQLException e) {
+System.err.println("Error inserting reservation: " + e.getMessage());
+return false;
+}
+}
+    public static boolean updateReservation(int id, LocalDate dateAffectation,
+            LocalDate dateRetour, double prix,
+            String statut) {
+String sql = """
+UPDATE reservations
+SET date_affectation = ?, date_retour = ?, prix = ?, statut = ?,
+updated_at = CURRENT_TIMESTAMP
+WHERE id = ?
+""";
+
+try (Connection conn = DatabaseConnection.getConnection();
+PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+pstmt.setString(1, dateAffectation != null ? dateAffectation.toString() : null);
+pstmt.setString(2, dateRetour.toString());
+pstmt.setDouble(3, prix);
+pstmt.setString(4, statut);
+pstmt.setInt(5, id);
+
+return pstmt.executeUpdate() > 0;
+
+} catch (SQLException e) {
+System.err.println("Error updating reservation: " + e.getMessage());
+return false;
+}
+}
+
     
     public static ArrayList<HistoriqueData> getHistoriqueDataByClientId(int clientId) {
         ArrayList<HistoriqueData> historiqueData = new ArrayList<>();
@@ -343,7 +502,49 @@ public class DBManager {
         
         return historiqueData;
     }
-    
+    public static boolean insertHistorique(int clientId, int voitureId,
+            LocalDate dateAllocation, LocalDate dateRetour) {
+String sql = """
+INSERT INTO historique (client_id, voiture_id, date_allocation, date_retour)
+VALUES (?, ?, ?, ?)
+""";
+
+try (Connection conn = DatabaseConnection.getConnection();
+PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+pstmt.setInt(1, clientId);
+pstmt.setInt(2, voitureId);
+pstmt.setString(3, dateAllocation.toString());
+pstmt.setString(4, dateRetour.toString());
+
+return pstmt.executeUpdate() > 0;
+
+} catch (SQLException e) {
+System.err.println("Error inserting historique: " + e.getMessage());
+return false;
+}
+}
+    public static boolean updateHistorique(int id, LocalDate dateRetour) {
+        String sql = """
+            UPDATE historique
+            SET date_retour = ?, updated_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+            """;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, dateRetour.toString());
+            pstmt.setInt(2, id);
+
+            return pstmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Error updating historique: " + e.getMessage());
+            return false;
+        }
+    }
+
     
     public static ArrayList<VoitureData> getAvailableVoituresData() {
         ArrayList<VoitureData> voituresData = new ArrayList<>();
@@ -395,16 +596,14 @@ public class DBManager {
         public final String adress;
         public final int numTell;
         public final int numPermis;
-        public final boolean trustworthy;
         
-        public ClientData(int id, String fName, String lName, String adress, int numTell, int numPermis, boolean trustworthy) {
+        public ClientData(int id, String fName, String lName, String adress, int numTell, int numPermis) {
             this.id = id;
             this.fName = fName;
             this.lName = lName;
             this.adress = adress;
             this.numTell = numTell;
             this.numPermis = numPermis;
-            this.trustworthy = trustworthy;
         }
     }
     

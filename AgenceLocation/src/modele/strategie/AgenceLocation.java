@@ -61,7 +61,6 @@ public class AgenceLocation {
 	public class Clients{
 		int ID,num_tell,num_permis;
 		String f_name,l_name,adress;
-        boolean trustworthy;
 		public class Alocation{
 			Voiture voiture_alouer;
 			LocalDate date_alocation,date_retoure;
